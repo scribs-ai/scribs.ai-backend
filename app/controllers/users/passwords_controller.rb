@@ -27,7 +27,7 @@ class Users::PasswordsController < Devise::PasswordsController
       password: params[:password]
     })
 
-    if user.present?
+    if user.save
       render json: { message: 'password changed successfully' }, status: :ok
     else
       render json: { error: ['Link not valid or expired. Try generating a new link.'] }, status: :not_found
