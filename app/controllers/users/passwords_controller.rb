@@ -10,9 +10,7 @@ class Users::PasswordsController < Devise::PasswordsController
     user = User.find_by(email: params[:email]) # if present find user by email
 
     if user.present?
-      user.generate_password_token! # generate pass token
       user.send_reset_password_instructions
-      # SEND EMAIL HERE
       render json: { status: 'ok' }, status: :ok
     else
       render json: { error: ['Email address not found. Please check and try again.'] }, status: :not_found
@@ -20,18 +18,17 @@ class Users::PasswordsController < Devise::PasswordsController
   end
 
   def reset
-    token = params[:token].to_s
+    token = params[:token]&.to_s
 
-    return render json: { error: 'Token not present' } if params[:email].blank?
+    return render json: { error: 'Token not present' } unless token
 
-    user = User.find_by(reset_password_token: token)
+    user = User.reset_password_by_token({
+      reset_password_token: token,
+      password: params[:password]
+    })
 
-    if user.present? && user.password_token_valid?
-      if user.reset_password!(params[:password])
-        render json: { status: 'ok' }, status: :ok
-      else
-        render json: { error: user.errors.full_messages }, status: :unprocessable_entity
-      end
+    if user.present?
+      render json: { message: 'password changed successfully' }, status: :ok
     else
       render json: { error: ['Link not valid or expired. Try generating a new link.'] }, status: :not_found
     end

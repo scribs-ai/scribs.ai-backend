@@ -5,17 +5,8 @@ Rails.application.routes.draw do
       passwords: 'users/passwords'
     }
 
-    # put "passwords/forgot", to: "user/passwords#forgot"
-    
-    # namespace :users do
-    #   resources :passwords, only: [] do
-    #     collection do
-    #       put :forgot, :reset, format: :json
-    #     end
-    #   end
-    # end
-
-    # put "/user/passwords/forgot", to: "user/passwords#forgot"
-
-    post 'social_auth/callback', to: 'users/social_auth#authenticate_social_auth_user'
+  devise_scope :user do
+    post 'users/passwords/forgot' => "users/passwords#forgot"
+    post 'users/passwords/reset' => "users/passwords#reset"
+  end
 end
