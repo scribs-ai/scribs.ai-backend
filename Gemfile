@@ -26,6 +26,12 @@ gem "stimulus-rails"
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder"
 
+# Use Json web token (JWT) for token based authentication 
+gem 'jwt'
+
+# Use Activemodel has_secure_password
+gem 'bcrypt'
+
 # Use Redis adapter to run Action Cable in production
 # gem "redis", ">= 4.0.1"
 
