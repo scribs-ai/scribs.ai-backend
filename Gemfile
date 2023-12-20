@@ -41,6 +41,9 @@ gem "jbuilder"
 # Use Json web token (JWT) for token based authentication 
 gem 'jwt'
 
+#enable cross-origin resource sharing
+gem 'rack-cors'
+
 # Use Activemodel has_secure_password
 gem 'bcrypt'
 
