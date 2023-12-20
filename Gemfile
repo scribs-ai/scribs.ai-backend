@@ -10,9 +10,17 @@ gem "sprockets-rails"
 
 # Use postgresql as the database for Active Record
 gem "pg", "~> 1.1"
+
+# byebug is a debugger for Ruby, allowing you to set breakpoints and inspect code execution
 gem 'byebug'
+
+# Devise is a flexible and powerful authentication solution for Rails
 gem "devise"
+
+# JSON Web Token (JWT) implementation for Ruby. Used for secure user authentication and authorization.
 gem 'jwt'
+
+# pry-nav adds step and next commands to Pry for debugging
 gem 'pry-nav'
 
 # Use the Puma web server [https://github.com/puma/puma]
