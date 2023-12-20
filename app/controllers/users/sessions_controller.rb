@@ -14,4 +14,13 @@ class Users::SessionsController < Devise::SessionsController
     end
   end
 
+  def otp_login
+    user = User.find_by_email(params[:email])
+    if user.otp_secret_key == params[:otp_secret]
+      token = JsonWebToken.encode(user_id: user.id)
+      render json: { token: token, exp: 1.day.from_now, id: user.id, email: user.email }, status: :ok
+    else
+      render json: { error: 'Invalid OTP' }, status: :unauthorized
+    end
+  end
 end
