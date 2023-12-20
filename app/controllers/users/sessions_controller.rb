@@ -1,7 +1,7 @@
 
 # app/controllers/users/sessions_controller.rb
 class Users::SessionsController < Devise::SessionsController
-  before_action :authorize_request, except: :create
+  before_action :authorize_request, except: [:create, :otp_login]
 
   def create
     user = User.find_by_email(params[:user][:email])
