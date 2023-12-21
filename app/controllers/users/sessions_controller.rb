@@ -7,7 +7,6 @@ class Users::SessionsController < Devise::SessionsController
     user = User.find_by_email(params[:user][:email])
     if user&.valid_password?(params[:user][:password])
       token = JsonWebToken.encode(user_id: user.id)
-      UserMailer.mail_sent(user).deliver_now
       render json: { token: token, exp: 1.day.from_now, id: user.id, email: user.email }, status: :ok
     else
       render json: { error: 'bad request' }, status: 400
