@@ -38,14 +38,23 @@ gem "stimulus-rails"
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder"
 
-# Use Json web token (JWT) for token based authentication 
-gem 'jwt'
-
 #enable cross-origin resource sharing
 gem 'rack-cors'
 
 # Use Activemodel has_secure_password
 gem 'bcrypt'
+
+# OmniAuth for authentication
+gem 'omniauth'
+
+# OmniAuth strategy for Google OAuth2
+gem "omniauth-google-oauth2"
+
+# OmniAuth strategy to protect Rails applications from CSRF attacks
+gem "omniauth-rails_csrf_protection"
+
+# HTTParty for making HTTP requests
+gem 'httparty'
 
 # Use Redis adapter to run Action Cable in production
 # gem "redis", ">= 4.0.1"
@@ -86,10 +95,4 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
 end
-
-gem 'omniauth'
-gem "omniauth-google-oauth2"
-
-gem "omniauth-rails_csrf_protection"
-gem 'httparty'
 
