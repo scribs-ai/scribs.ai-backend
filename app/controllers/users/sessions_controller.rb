@@ -9,7 +9,7 @@ class Users::SessionsController < Devise::SessionsController
       token = JsonWebToken.encode(user_id: user.id)
       render json: { token: token, exp: 1.day.from_now, id: user.id, email: user.email }, status: :ok
     else
-      render json: { error: 'bad request' }, status: 400
+      render json: { error: 'Email is Invalid' }, status: 401
     end
   end
 

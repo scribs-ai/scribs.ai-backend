@@ -16,12 +16,28 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   def generate_otp
     user = User.find_by_email(params[:email])
+  
+    return render_not_found_error unless user
+  
     otp = generate_and_update_otp(user)
-    send_otp_by_mail(user, otp)
-    render json: { otp: otp }, status: :ok
+  
+    if otp.present?
+      send_otp_by_mail(user, otp)
+      render json: { otp: otp }, status: :ok
+    else
+      render_otp_generation_error
+    end
   end
   
   private
+
+  def render_not_found_error
+    render json: { error: 'User not found' }, status: :not_found
+  end
+  
+  def render_otp_generation_error
+    render json: { error: 'Failed to generate OTP' }, status: :unprocessable_entity
+  end
   
   def generate_and_update_otp(user)
     otp = user.otp_generation
