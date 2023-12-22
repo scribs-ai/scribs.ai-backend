@@ -5,9 +5,10 @@ class Users::SessionsController < Devise::SessionsController
 
   def create
     user = User.find_by_email(params[:user][:email])
+    return render_unauthorized unless user&.confirmed_at
+
     if user&.valid_password?(params[:user][:password])
-      token = JsonWebToken.encode(user_id: user.id)
-      render json: { token: token, exp: 1.day.from_now, id: user.id, email: user.email }, status: :ok
+      render json: token_info(user), status: :ok
     else
       render json: { error: 'Email is Invalid' }, status: 401
     end
@@ -22,4 +23,11 @@ class Users::SessionsController < Devise::SessionsController
       render json: { error: 'Invalid OTP' }, status: :unauthorized
     end
   end
+  
+  private
+  
+  def render_unauthorized
+    render json: { message: 'Please confirm email' }, status: :unauthorized
+  end
+
 end

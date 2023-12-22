@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <style type="text/css">
+  </style>
+</head>
+  <body>
+  <p>Welcome <%= @user.email %>!</p>
+
+  <p>You can confirm your account email through the link below:</p>
+
+  <p><a href="http://13.58.78.54:3000/confirmation_link/<%= @user.confirmation_token%>" style="color: blue;">Confirm my account</a></p>
+
+
+</body>
