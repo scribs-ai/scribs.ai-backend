@@ -14,6 +14,27 @@ class Users::RegistrationsController < Devise::RegistrationsController
     end
   end
 
+  def google_oauth
+    url = "https://www.googleapis.com/oauth2/v2/userinfo"                  
+    response = HTTParty.get(url, headers: { "Authorization" => params[:access_token] })
+                
+    if @user = User.exists?(email: response.parsed_response["email"])
+      @user = User.find_by(email: response.parsed_response["email"])
+    else
+      @user = User.create_user_for_google(response.parsed_response)      
+    end
+    token = JsonWebToken.encode(user_id: @user.id)    
+    if @user
+      render json: {
+        id: @user.id, email: @user.email,
+        token: JsonWebToken.encode(user_id: @user.id),
+        message: 'Registration Successful!'
+      }, status: :ok
+    else
+      render json: { errors: @user.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
   def generate_otp
     user = User.find_by_email(params[:email])
   

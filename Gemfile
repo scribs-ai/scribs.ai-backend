@@ -87,5 +87,9 @@ group :test do
   gem "selenium-webdriver"
 end
 
-
 gem 'omniauth'
+gem "omniauth-google-oauth2"
+
+gem "omniauth-rails_csrf_protection"
+gem 'httparty'
+

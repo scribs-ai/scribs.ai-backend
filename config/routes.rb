@@ -10,6 +10,7 @@ Rails.application.routes.draw do
     post 'users/passwords/forgot' => "users/passwords#forgot"
     post 'users/passwords/reset' => "users/passwords#reset"
     get '/users/registrations/generate_otp', to: 'users/registrations#generate_otp'
+    post '/users/registrations/google_oauth', to: 'users/registrations#google_oauth'
     post '/users/sessions/otp_login', to: 'users/sessions#otp_login'
   end
 end
