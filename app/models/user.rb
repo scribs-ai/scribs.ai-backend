@@ -4,6 +4,8 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable, :omniauthable, :confirmable,
          :omniauthable, omniauth_providers: [:google_oauth2]
 
+  serialize :notification_preferences, type: Hash, coder: YAML
+
   def otp_generation(length = 6)
     characters = ('2'..'7').to_a
     secret = Array.new(length) { characters.sample }.join
