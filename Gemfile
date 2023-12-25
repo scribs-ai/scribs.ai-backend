@@ -56,6 +56,8 @@ gem "omniauth-rails_csrf_protection"
 # HTTParty for making HTTP requests
 gem 'httparty'
 
+# Internationalization library for Ruby, provides support for multilingual applications
+gem 'i18n'
 # Use Redis adapter to run Action Cable in production
 # gem "redis", ">= 4.0.1"
 

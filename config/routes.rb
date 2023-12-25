@@ -13,4 +13,13 @@ Rails.application.routes.draw do
     post '/users/registrations/google_oauth', to: 'users/registrations#google_oauth'
     post '/users/sessions/otp_login', to: 'users/sessions#otp_login'
   end
+
+  namespace :settings do
+    resources :languages, only: [] do
+      collection do
+        get 'language_options'
+        post 'set_language'
+      end
+    end
+  end
 end

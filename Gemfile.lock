@@ -305,6 +305,7 @@ DEPENDENCIES
   debug
   devise
   httparty
+  i18n
   importmap-rails
   jbuilder
   jwt
