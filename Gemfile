@@ -61,6 +61,13 @@ gem 'i18n'
 # Use Redis adapter to run Action Cable in production
 # gem "redis", ">= 4.0.1"
 
+# Activestorage gem:
+# Active Storage is a Rails component that facilitates file uploads and attachment management.
+gem 'activestorage'
+
+# AWS SDK for Amazon S3 gem:
+gem "aws-sdk-s3", require: false
+
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"
 
@@ -97,4 +104,3 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
 end
-

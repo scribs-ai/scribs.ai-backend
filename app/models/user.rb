@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+  has_one_attached :image
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable, :omniauthable, :confirmable,
          :omniauthable, omniauth_providers: [:google_oauth2]
@@ -15,5 +16,14 @@ class User < ApplicationRecord
       user.password_confirmation=user.password
       user.save!
     end
+  end
+
+  def image_url
+    if Rails.env.production?
+      image_url = self.image.blob.url
+    else
+      image_url = Rails.application.routes.url_helpers.rails_blob_url(self.image, only_path: true) 
+    end
+    image_url
   end
 end

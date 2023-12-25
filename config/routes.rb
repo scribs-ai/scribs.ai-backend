@@ -15,6 +15,7 @@ Rails.application.routes.draw do
   end
 
   namespace :settings do
+    resources :user_profiles, only: [:show, :update, :destroy]
     resources :languages, only: [] do
       collection do
         get 'language_options'
