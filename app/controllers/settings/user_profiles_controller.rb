@@ -1,5 +1,5 @@
 class Settings::UserProfilesController < ApplicationController
-  before_action :authenticate_user, only: [:show, :update, :destroy]
+  before_action :authenticate_user, only: [:show, :update]
 
   def show
     if @current_user
@@ -21,15 +21,6 @@ class Settings::UserProfilesController < ApplicationController
     end
   end
 
-  def destroy
-    if @current_user
-      @current_user.destroy
-      render json: { message: 'User deleted successfully' }, status: :no_content
-    else
-      render json: { error: 'User not found' }, status: :not_found
-    end
-  end
-
   private
   def user_params
     params.require(:user).permit(:name, :email, :image)
@@ -44,27 +35,6 @@ class Settings::UserProfilesController < ApplicationController
       created_at: @current_user.created_at,
       updated_at: @current_user.updated_at
     }
-    
   end
-
-  def authenticate_user
-    token = request.headers["Authorization"]
-
-    if token.nil?
-      render json: { error: 'Authorization header is missing' }, status: :unauthorized
-      return
-    end
-
-    begin
-      decoded_token = JsonWebToken.decode(token)
-      user_id = decoded_token["user_id"]
-      @current_user = User.find_by(id: user_id)
-      
-      unless @current_user
-        render json: { error: 'User not found' }, status: :unauthorized
-      end
-    rescue JWT::DecodeError
-      render json: { error: 'Invalid token' }, status: :unauthorized
-    end
-  end
+  
 end

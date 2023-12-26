@@ -1,5 +1,7 @@
 class User < ApplicationRecord
   has_one_attached :image
+  has_one :user_analytic, dependent: :destroy
+
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable, :omniauthable, :confirmable,
          :omniauthable, omniauth_providers: [:google_oauth2]

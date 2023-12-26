@@ -15,13 +15,12 @@ Rails.application.routes.draw do
   end
 
   namespace :settings do
-    resources :user_profiles, only: [:show, :update, :destroy]
-    
+    resources :user_profiles, only: [:show, :update]
+    resources :user_analytics, only: [:show, :update, :destroy, :create]
     resource :accounts, only: [] do
       get :export_user_data_to_csv
       delete 'delete_account', to: 'accounts#delete_account', as: 'delete_account'
     end
-    
     resources :languages, only: [] do
       collection do
         get 'language_options'
