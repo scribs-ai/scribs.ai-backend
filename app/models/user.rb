@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-  has_one_attached :profile_picture
+  has_one_attached :image
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable, :omniauthable, :confirmable,
          :omniauthable, omniauth_providers: [:google_oauth2]
@@ -20,12 +20,13 @@ class User < ApplicationRecord
     end
   end
 
-  def image_url
+  def fetch_image_url
+    image_path = nil
     if Rails.env.production?
-      image_url = self.profile_picture.blob.url
+      image_path = self.image.blob.url
     else
-      image_url = Rails.application.routes.url_helpers.rails_blob_url(self.profile_picture, only_path: true) 
+      image_path = Rails.application.routes.url_helpers.rails_blob_url(self.image, only_path: true) 
     end
-    image_url
+    image_path
   end
 end
