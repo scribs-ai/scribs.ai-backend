@@ -21,12 +21,12 @@ class User < ApplicationRecord
   end
 
   def fetch_image_url
-    image_path = nil
+    return nil unless self.image.attached?
+
     if Rails.env.production?
       image_path = self.image.blob.url
     else
       image_path = Rails.application.routes.url_helpers.rails_blob_url(self.image, only_path: true) 
     end
-    image_path
   end
 end
