@@ -1,3 +1,5 @@
+require 'csv'
+
 class User < ApplicationRecord
   has_one_attached :image
   has_one :user_analytic, dependent: :destroy
@@ -29,6 +31,15 @@ class User < ApplicationRecord
       image_path = self.image.blob.url
     else
       image_path = Rails.application.routes.url_helpers.rails_blob_url(self.image, only_path: true) 
+    end
+  end
+
+  def self.to_csv
+    CSV.generate do |csv|
+      csv << column_names
+      all.each do |user|
+        csv << user.attributes.values_at(*column_names)
+      end
     end
   end
 end
