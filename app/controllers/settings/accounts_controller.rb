@@ -8,5 +8,15 @@ class Settings::AccountsController < ApplicationController
                     type: 'text/csv; charset=utf-8',
                     disposition: 'attachment'
 	end
+
+	def delete_account
+		user = User.find_by_email(params[:email])
+		if user 
+			user.update(deleted: true)
+			render json: { message: 'User deleted successfully' }, status: :ok
+		else
+			render json: { error: 'User not found' }, status: :not_found
+		end
+  end 
 end
   

@@ -19,6 +19,7 @@ Rails.application.routes.draw do
     
     resource :accounts, only: [] do
       get :export_user_data_to_csv
+      delete 'delete_account', to: 'accounts#delete_account', as: 'delete_account'
     end
     
     resources :languages, only: [] do
