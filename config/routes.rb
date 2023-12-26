@@ -16,6 +16,11 @@ Rails.application.routes.draw do
 
   namespace :settings do
     resources :user_profiles, only: [:show, :update, :destroy]
+    
+    resource :accounts, only: [] do
+      get :export_user_data_to_csv
+    end
+    
     resources :languages, only: [] do
       collection do
         get 'language_options'
