@@ -80,6 +80,12 @@ gem 'activestorage'
 # AWS SDK for Amazon S3 gem:
 gem "aws-sdk-s3", require: false
 
+# Use 'sass-rails' for stylesheets compilation and SASS support
+gem 'sass-rails'
+
+# Use 'activeadmin' for easy administration interface
+gem "activeadmin", "~> 3.2"
+
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"
 
@@ -116,3 +122,4 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
 end
+

@@ -19,6 +19,12 @@ class User < ApplicationRecord
     secret = Array.new(length) { characters.sample }.join
   end
 
+
+  def self.ransackable_attributes(auth_object = nil)
+    ["confirmation_sent_at", "confirmation_token", "confirmed_at", "created_at", "deleted", "email", "encrypted_password", "id", "id_value", "name", "notification_preferences", "otp_secret_key", "profile_picture", "remember_created_at", "reset_password_sent_at", "reset_password_token", "unconfirmed_email", "updated_at"]
+  end
+
+
   def self.create_user_for_google(data)
     where(email: data["email"]).first_or_initialize.tap do |user|
       user.email=data["email"]
