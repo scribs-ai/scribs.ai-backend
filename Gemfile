@@ -61,6 +61,18 @@ gem 'i18n'
 # Use Redis adapter to run Action Cable in production
 # gem "redis", ">= 4.0.1"
 
+# For Google Drive API v3
+gem 'google-api-client'
+
+# For Google Drive access
+gem 'google_drive'
+
+# Gemfile
+
+gem 'faraday', '~> 1.5'
+
+# gem 'multipart-post', '~> 2.1'
+
 # Activestorage gem:
 # Active Storage is a Rails component that facilitates file uploads and attachment management.
 gem 'activestorage'

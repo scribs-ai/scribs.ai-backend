@@ -6,6 +6,8 @@ Rails.application.routes.draw do
       confirmations: 'users/confirmations'
     }
 
+  post 'google_drive/upload_file', to: 'google_drive#upload_file', as: 'upload_file'
+
   devise_scope :user do
     post 'users/passwords/forgot' => "users/passwords#forgot"
     post 'users/passwords/reset' => "users/passwords#reset"
