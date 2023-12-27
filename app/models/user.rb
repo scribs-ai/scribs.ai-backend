@@ -10,6 +10,10 @@ class User < ApplicationRecord
 
   serialize :notification_preferences, type: Hash, coder: YAML
 
+  # Default scope
+  # ----------------------------------------------------------------------------
+  default_scope { where(deleted: false) }
+
   def otp_generation(length = 6)
     characters = ('2'..'7').to_a
     secret = Array.new(length) { characters.sample }.join
@@ -32,6 +36,10 @@ class User < ApplicationRecord
     else
       image_path = Rails.application.routes.url_helpers.rails_blob_url(self.image, only_path: true) 
     end
+  end
+
+  def self.fetch_users_without_scope
+    connection.select_all("SELECT name, email, notification_preferences,profile_picture, deleted FROM users").to_a
   end
 
   def self.to_csv

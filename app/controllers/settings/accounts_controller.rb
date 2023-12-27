@@ -1,5 +1,6 @@
 class Settings::AccountsController < ApplicationController
 	skip_before_action :verify_authenticity_token
+	before_action :authenticate_user
 
   def export_user_data
     users_data = User.all
@@ -15,7 +16,7 @@ class Settings::AccountsController < ApplicationController
   end
 
 	def delete_account
-		user = User.find_by_email(params[:email])
+		user = @current_user
 		if user 
 			user.update(deleted: true)
 			render json: { message: 'User deleted successfully' }, status: :ok
