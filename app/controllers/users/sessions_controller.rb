@@ -5,7 +5,8 @@ class Users::SessionsController < Devise::SessionsController
 
   def create
     user = User.find_by_email(params[:user][:email])
-    return render_unauthorized unless user&.confirmed_at
+    return render_user_not_found unless user
+    return render_unauthorized unless user.confirmed_at
 
     if user&.valid_password?(params[:user][:password])
       render json: token_info(user), status: :ok
@@ -30,4 +31,7 @@ class Users::SessionsController < Devise::SessionsController
     render json: { message: 'Please confirm email' }, status: :unauthorized
   end
 
+  def render_user_not_found
+    render json: { message: 'User not found' }, status: :unauthorized
+  end
 end
