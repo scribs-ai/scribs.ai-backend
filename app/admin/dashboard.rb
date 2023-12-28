@@ -1,33 +1,35 @@
-# frozen_string_literal: true
-ActiveAdmin.register_page "Dashboard" do
-  menu priority: 1, label: proc { I18n.t("active_admin.dashboard") }
+ActiveAdmin.register_page 'Dashboard' do
+  menu priority: 1, label: proc { I18n.t('active_admin.dashboard') }
 
-  content title: proc { I18n.t("active_admin.dashboard") } do
-    div class: "blank_slate_container", id: "dashboard_default_message" do
-      span class: "blank_slate" do
-        span I18n.t("active_admin.dashboard_welcome.welcome")
-        small I18n.t("active_admin.dashboard_welcome.call_to_action")
+  content title: proc { I18n.t('active_admin.dashboard') } do
+    columns do
+      column do
+        panel 'Sidebar' do
+          ul do
+            li link_to('Workspace Selector', admin_dashboard_path)
+            li link_to('Recent', admin_dashboard_path)
+            li link_to('AI Editor', admin_dashboard_path)
+            li link_to('Knowledge', admin_dashboard_path)
+            li link_to('Chat Bot', admin_dashboard_path)
+            li link_to('AI Generators', admin_dashboard_path)
+            li link_to('Workflows', admin_dashboard_path)
+            li link_to('Guide', admin_dashboard_path)
+            li link_to('Promotions (For non-subscribed users)', admin_dashboard_path)
+            li link_to('Limits', admin_dashboard_path)
+            li link_to('Account Settings', admin_dashboard_path)
+            li link_to('Settings', admin_dashboard_path)
+            li link_to('System Configuration', admin_dashboard_path)
+          end
+        end
+      end
+
+      column do
+        panel 'Main Content' do
+          # Your content for the main area
+          h2 "Welcome to the Dashboard"
+          p "This is your custom Active Admin dashboard."
+        end
       end
     end
-
-    # Here is an example of a simple dashboard with columns and panels.
-    #
-    # columns do
-    #   column do
-    #     panel "Recent Posts" do
-    #       ul do
-    #         Post.recent(5).map do |post|
-    #           li link_to(post.title, admin_post_path(post))
-    #         end
-    #       end
-    #     end
-    #   end
-
-    #   column do
-    #     panel "Info" do
-    #       para "Welcome to ActiveAdmin."
-    #     end
-    #   end
-    # end
-  end # content
+  end
 end

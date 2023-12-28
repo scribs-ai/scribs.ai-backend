@@ -9,6 +9,9 @@ Rails.application.routes.draw do
     }
 
   post 'google_drive/upload_file', to: 'google_drive#upload_file', as: 'upload_file'
+  patch 'subscription/upgrade', to: 'subscriptions#upgrade', as: 'upgrade'
+  delete 'subscription/cancel', to: 'subscriptions#cancel', as: 'cancel'
+  post 'subscriptions', to: 'subscriptions#create', as: 'create'
 
   devise_scope :user do
     post 'users/passwords/forgot' => "users/passwords#forgot"

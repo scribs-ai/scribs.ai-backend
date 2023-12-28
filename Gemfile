@@ -71,7 +71,7 @@ gem 'google_drive'
 
 gem 'faraday', '~> 1.5'
 
-# gem 'multipart-post', '~> 2.1'
+gem 'stripe'
 
 # Activestorage gem:
 # Active Storage is a Rails component that facilitates file uploads and attachment management.
