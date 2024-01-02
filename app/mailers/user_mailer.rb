@@ -6,6 +6,12 @@ class UserMailer < ApplicationMailer
     @user = user
     mail(to: @user.email, subject: 'Otp for authentication')
   end
+
+  def subscription_invoice_sent(user, invoice)
+    @user = user
+    @invoice = invoice
+    mail(to: user.email, subject: 'Invoice of subscription plan')
+  end
 end
 
   

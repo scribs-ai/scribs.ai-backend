@@ -1,16 +1,33 @@
 class SubscriptionsController < ApplicationController
   before_action :authenticate_user
-
-  def create
+  
+  def create_subscription_and_invoice
     customer = create_stripe_customer
     product = create_stripe_product
     plan = create_stripe_plan(product)
     subscription = create_stripe_subscription(customer, plan)
-    update_user(subscription) if subscription
-    render json: {subscription_data: subscription}
     
+    current_user.update(stripe_customer_id: customer.id) if customer
+    update_user(subscription) if subscription
+    
+    customer_id = customer.id
+    plan_id = plan.id
+
+    invoice = Stripe::Invoice.create(
+      customer: customer_id,
+      subscription: subscription.id,
+    )
+
+    send_invoice_to_customer(customer_id, invoice)
+
+    # You can return any relevant information in the API response
+    render json: {
+      subscription: subscription,
+      invoice: invoice,
+      message: 'Subscription and invoice created successfully.'
+    }
   rescue Stripe::StripeError => e
-    render json: {error: e.message}
+    render json: { error: e.message }
   end
 
   def upgrade
@@ -33,8 +50,12 @@ class SubscriptionsController < ApplicationController
               
               render json: message, status: :ok
   end
-  
+
   private
+
+  def send_invoice_to_customer(customer_id, invoice)
+    UserMailer.subscription_invoice_sent(current_user, invoice).deliver_now
+  end
   
   def upgrade_subscription(current_subscription)
     message = { message: 'Subscription not found' } 
@@ -55,6 +76,7 @@ class SubscriptionsController < ApplicationController
       metadata: { order_id: '6735' }
     )
     
+    update_user(updated_subscription)
     { message: 'Subscription updated successfully' }
   end
   
