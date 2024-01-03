@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_12_29_054641) do
+ActiveRecord::Schema[7.1].define(version: 2024_01_02_102627) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -68,6 +68,31 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_29_054641) do
     t.index ["reset_password_token"], name: "index_admin_users_on_reset_password_token", unique: true
   end
 
+  create_table "contents", force: :cascade do |t|
+    t.string "title"
+    t.text "body"
+    t.string "image_url"
+    t.datetime "published_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "notifications", force: :cascade do |t|
+    t.string "title"
+    t.text "content"
+    t.datetime "sent_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "system_configurations", force: :cascade do |t|
+    t.string "key"
+    t.string "value"
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "user_analytics", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.datetime "time"
@@ -97,6 +122,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_12_29_054641) do
     t.text "notification_preferences"
     t.boolean "deleted", default: false
     t.string "subscription"
+    t.string "role"
     t.string "stripe_customer_id"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true

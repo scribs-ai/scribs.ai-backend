@@ -4,7 +4,7 @@ ActiveAdmin.register User do
                 :created_at, :updated_at, :otp_secret_key,
                 :confirmation_token, :confirmed_at, :confirmation_sent_at,
                 :unconfirmed_email, :name, :profile_picture,
-                :notification_preferences, :deleted, :password
+                :notification_preferences, :deleted, :password, :role
 
   index do
     selectable_column
@@ -13,6 +13,7 @@ ActiveAdmin.register User do
     column :name
     column :profile_picture
     column :created_at
+    column :role
     actions
   end
 
@@ -21,7 +22,7 @@ ActiveAdmin.register User do
       row :email
       row :name
       row :created_at
-      # Add other attributes as needed
+      row :role
     end
   end
 
@@ -33,7 +34,11 @@ ActiveAdmin.register User do
     f.inputs do
       f.input :email
       f.input :name
-      f.input :password
+      f.input :role, as: :select, collection: ["user","admin"]
+      if f.object.new_record?
+        f.input :password
+        f.input :password_confirmation
+      end
     end
     f.actions
   end
