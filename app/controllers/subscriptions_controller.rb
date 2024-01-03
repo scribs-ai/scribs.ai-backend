@@ -5,7 +5,7 @@ class SubscriptionsController < ApplicationController
     customer = create_stripe_customer
     price_id = create_stripe_price(params[:plan])
 
-    customer_checkout_session = create_checkout_session(price_id, customer.id)
+    customer_checkout_session = create_checkout_session(price_id, customer)
     render json: {client_secret: customer_checkout_session.url}, status: :ok
   end
 
@@ -87,11 +87,11 @@ class SubscriptionsController < ApplicationController
   def create_stripe_price(price)
     case price
     when 'Plan A'
-      Price.first
+      Price.first.stripe_price_id
     when 'Plan B'
-      Price.second
+      Price.second.stripe_price_id
     when 'Plan C'
-      Price.third
+      Price.third.stripe_price_id
     else
       # Handle the case when the plan is not recognized
       raise ArgumentError, "Invalid plan: #{price}"
@@ -103,7 +103,7 @@ class SubscriptionsController < ApplicationController
     success_url: 'https://example.com/success',
     line_items: [
       {
-        price: price.id,
+        price: price_id,
         quantity: 1,
       },
     ],
