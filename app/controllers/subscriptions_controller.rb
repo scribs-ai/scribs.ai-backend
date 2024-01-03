@@ -86,15 +86,15 @@ class SubscriptionsController < ApplicationController
 
   def create_stripe_price(price)
     case price
-    when 'A'
+    when 'Plan A'
       Price.first
-    when 'B'
+    when 'Plan B'
       Price.second
-    when 'C'
+    when 'Plan C'
       Price.third
     else
       # Handle the case when the plan is not recognized
-      raise ArgumentError, "Invalid plan: #{plan}"
+      raise ArgumentError, "Invalid plan: #{price}"
     end
   end
 
