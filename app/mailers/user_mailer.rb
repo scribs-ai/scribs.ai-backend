@@ -10,7 +10,7 @@ class UserMailer < ApplicationMailer
   def subscription_invoice_sent(user, invoice)
     @user = user
     @invoice = invoice
-    mail(to: user.email, subject: 'Invoice of subscription plan')
+    mail(to: @user.email, subject: 'Invoice of subscription plan')
   end
   
   def renew_subscription(user,notification)

@@ -1,34 +1,16 @@
 class SubscriptionsController < ApplicationController
   before_action :authenticate_user
-  
-  def create_subscription_and_invoice
+
+  def create_customer_and_intent
     customer = create_stripe_customer
-    product = create_stripe_product
-    plan = create_stripe_plan(product)
-    subscription = create_stripe_subscription(customer, plan)
-    
     current_user.update(stripe_customer_id: customer.id) if customer
-    update_user(subscription) if subscription
-    
-    customer_id = customer.id
-    plan_id = plan.id
-
-    invoice = Stripe::Invoice.create(
-      customer: customer_id,
-      subscription: subscription.id,
-    )
-
-    send_invoice_to_customer(customer_id, invoice)
-
-    # You can return any relevant information in the API response
-    render json: {
-      subscription: subscription,
-      invoice: invoice,
-      message: 'Subscription and invoice created successfully.'
-    }
-  rescue Stripe::StripeError => e
-    render json: { error: e.message }
+    product = create_stripe_product(params[:category])
+    price = create_stripe_plan(product)
+    create_payment_method(customer.id)
+    customer_checkout_session = create_checkout_session(price, customer.id)
+    render json: {client_secret: customer_checkout_session.url}, status: :ok
   end
+
 
   def upgrade
     message = if current_user.subscription.nil?
@@ -51,11 +33,17 @@ class SubscriptionsController < ApplicationController
               render json: message, status: :ok
   end
 
-  private
-
-  def send_invoice_to_customer(customer_id, invoice)
-    UserMailer.subscription_invoice_sent(current_user, invoice).deliver_now
+  def refunds
+    response = Stripe::Refund.list(current_user.stripe_customer_id, {limit: 3})
+    render json: {refunds: response}, status: :ok
   end
+
+  def transaction_by_user
+    response = Stripe::Customer.list_balance_transactions(current_user.stripe_customer_id, {limit: 3})
+    render json: {transaction: response}, status: :ok
+  end
+
+  private
   
   def upgrade_subscription(current_subscription)
     message = { message: 'Subscription not found' } 
@@ -95,32 +83,53 @@ class SubscriptionsController < ApplicationController
     Stripe::Customer.create(email: current_user.email)
   end
 
-  def create_stripe_product
+  def create_stripe_product(category)
     Stripe::Product.create(name: 'gold plan')
   end
 
   def create_stripe_plan(product)
-    Stripe::Plan.create(
-      amount: 1200,
+    Stripe::Price.create({
       currency: 'usd',
-      interval: 'month',
-      product: product.id
-    )
-  end
-
-  def create_stripe_subscription(customer, plan)
-    Stripe::Subscription.create(
-      customer: customer.id,
-      items: [{ price: plan.id }],
-      payment_behavior: 'default_incomplete',
-      payment_settings: {
-        payment_method_types: ['card']
-      },
-      expand: ['latest_invoice.payment_intent']
-    )
+      unit_amount: 1000,
+      recurring: {interval: 'month'},
+      product_data: {name: 'Gold Plan'},
+    })
   end
 
   def update_user(subscription)
     current_user.update(subscription: subscription.id)
+  end
+
+  def create_payment_method(customer_id)
+    payment_method  = Stripe::PaymentMethod.create({
+      type: 'card',
+      card: {
+        token: 'tok_visa',
+      },
+    })
+ 
+ 
+    Stripe::PaymentMethod.attach(
+      payment_method.id,
+      {customer: customer_id},
+    )
+    # payment_method
+  end
+
+  def create_checkout_session(price, customer_id)
+    checkout_session = Stripe::Checkout::Session.create({
+    success_url: 'https://example.com/success',
+    line_items: [
+      {
+        price: price.id,
+        quantity: 1,
+      },
+    ],
+    mode: 'subscription',
+    customer: customer_id,
+    metadata: {
+    price_id: price.id
+  },
+  })
   end
 end

@@ -11,7 +11,10 @@ Rails.application.routes.draw do
   post 'google_drive/upload_file', to: 'google_drive#upload_file', as: 'upload_file'
   patch 'subscription/upgrade', to: 'subscriptions#upgrade', as: 'upgrade'
   delete 'subscription/cancel', to: 'subscriptions#cancel', as: 'cancel'
-  post 'subscriptions', to: 'subscriptions#create_subscription_and_invoice', as: 'create'
+  post 'customer_intent', to: 'subscriptions#create_customer_and_intent', as: 'customer_intent'
+  get 'refunds', to: 'subscriptions#refunds', as: 'refunds'
+  
+  post '/stripe-webhooks', to: 'stripe_webhooks#handle_event'
 
   devise_scope :user do
     post 'users/passwords/forgot' => "users/passwords#forgot"
