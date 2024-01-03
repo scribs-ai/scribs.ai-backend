@@ -85,7 +85,7 @@ class SubscriptionsController < ApplicationController
   end
 
   def create_stripe_price(price)
-    case plan
+    case price
     when 'A'
       Price.first
     when 'B'
