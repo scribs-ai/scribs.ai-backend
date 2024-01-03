@@ -3,11 +3,9 @@ class SubscriptionsController < ApplicationController
 
   def create_customer_and_intent
     customer = create_stripe_customer
-    current_user.update(stripe_customer_id: customer.id) if customer
-    product = create_stripe_product(params[:category])
-    price = create_stripe_plan(product)
-    create_payment_method(customer.id)
-    customer_checkout_session = create_checkout_session(price, customer.id)
+    price_id = create_stripe_price(params[:plan])
+
+    customer_checkout_session = create_checkout_session(price_id, customer.id)
     render json: {client_secret: customer_checkout_session.url}, status: :ok
   end
 
@@ -70,7 +68,7 @@ class SubscriptionsController < ApplicationController
   
       
   def cancel_subscription
-    current_subscription = Stripe::Subscription.retrieve(current_user.subscription, { stripe_account: 'acct_1ORswSSAw4lwtIyg' })
+    current_subscription = Stripe::Subscription.retrieve(current_user.subscription,  { stripe_account: Rails.application.credentials.dig(:stripe, :account_id) })
     return { message: 'No subscription found' } unless current_subscription
     
     canceled_subscription = Stripe::Subscription.cancel(current_subscription.id)
@@ -80,43 +78,27 @@ class SubscriptionsController < ApplicationController
   
 
   def create_stripe_customer
-    Stripe::Customer.create(email: current_user.email)
+    return current_user.stripe_customer_id if current_user.stripe_customer_id
+    customer = Stripe::Customer.create(email: current_user.email)
+    current_user.update(stripe_customer_id: customer.id)
+    customer
   end
 
-  def create_stripe_product(category)
-    Stripe::Product.create(name: 'gold plan')
+  def create_stripe_price(price)
+    case plan
+    when 'A'
+      Price.first
+    when 'B'
+      Price.second
+    when 'C'
+      Price.third
+    else
+      # Handle the case when the plan is not recognized
+      raise ArgumentError, "Invalid plan: #{plan}"
+    end
   end
 
-  def create_stripe_plan(product)
-    Stripe::Price.create({
-      currency: 'usd',
-      unit_amount: 1000,
-      recurring: {interval: 'month'},
-      product_data: {name: 'Gold Plan'},
-    })
-  end
-
-  def update_user(subscription)
-    current_user.update(subscription: subscription.id)
-  end
-
-  def create_payment_method(customer_id)
-    payment_method  = Stripe::PaymentMethod.create({
-      type: 'card',
-      card: {
-        token: 'tok_visa',
-      },
-    })
- 
- 
-    Stripe::PaymentMethod.attach(
-      payment_method.id,
-      {customer: customer_id},
-    )
-    # payment_method
-  end
-
-  def create_checkout_session(price, customer_id)
+  def create_checkout_session(price_id, customer_id)
     checkout_session = Stripe::Checkout::Session.create({
     success_url: 'https://example.com/success',
     line_items: [
@@ -128,7 +110,7 @@ class SubscriptionsController < ApplicationController
     mode: 'subscription',
     customer: customer_id,
     metadata: {
-    price_id: price.id
+    price_id: price_id
   },
   })
   end
