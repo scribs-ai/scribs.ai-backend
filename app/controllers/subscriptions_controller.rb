@@ -100,7 +100,6 @@ class SubscriptionsController < ApplicationController
 
   def create_checkout_session(price_id, customer_id)
     checkout_session = Stripe::Checkout::Session.create({
-    success_url: 'https://example.com/success',
     line_items: [
       {
         price: price_id,
@@ -109,6 +108,8 @@ class SubscriptionsController < ApplicationController
     ],
     mode: 'subscription',
     customer: customer_id,
+    success_url: 'http://localhost:3000/dashboard', 
+    cancel_url: 'http://localhost:3000/settings/subscription',
     metadata: {
     price_id: price_id
   },
