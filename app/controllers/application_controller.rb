@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
 
   def token_info(user)
     token = JsonWebToken.encode(user_id: user.id)
-    { token: token, exp: 1.day.from_now, id: user.id, email: user.email }
+    { token: token, exp: 1.day.from_now, id: user.id, email: user.email, two_factor: user.two_factor_enabled }
   end
 
   
