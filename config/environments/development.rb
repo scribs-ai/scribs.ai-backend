@@ -45,6 +45,8 @@ Rails.application.configure do
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
 
+  config.hosts << "ec2-13-58-78-54.us-east-2.compute.amazonaws.com:3000"
+  
   # Raise exceptions for disallowed deprecations.
   config.active_support.disallowed_deprecation = :raise
 

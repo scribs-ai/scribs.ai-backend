@@ -108,8 +108,8 @@ class SubscriptionsController < ApplicationController
     ],
     mode: 'subscription',
     customer: customer_id,
-    success_url: 'http://localhost:3000/dashboard', 
-    cancel_url: 'http://localhost:3000/settings/subscription',
+    success_url: 'http://ec2-18-225-54-114.us-east-2.compute.amazonaws.com/dashboard', 
+    cancel_url: 'http://ec2-18-225-54-114.us-east-2.compute.amazonaws.com/settings/subscription',
     metadata: {
     price_id: price_id
   },
