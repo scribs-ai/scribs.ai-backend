@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_01_04_052600) do
+ActiveRecord::Schema[7.1].define(version: 2024_01_04_124922) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -85,6 +85,23 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_04_052600) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "orders", force: :cascade do |t|
+    t.integer "amount_cents"
+    t.integer "payment_method"
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_orders_on_user_id"
+  end
+
+  create_table "payments", force: :cascade do |t|
+    t.bigint "order_id", null: false
+    t.string "stripe_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["order_id"], name: "index_payments_on_order_id"
+  end
+
   create_table "prices", force: :cascade do |t|
     t.string "stripe_price_id"
     t.datetime "created_at", null: false
@@ -95,6 +112,21 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_04_052600) do
     t.string "key"
     t.string "value"
     t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "system_settings", force: :cascade do |t|
+    t.boolean "feature_toggle"
+    t.boolean "maintenance_mode"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "team_members", force: :cascade do |t|
+    t.string "name"
+    t.string "role"
+    t.integer "workspace_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -127,6 +159,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_04_052600) do
     t.string "profile_picture"
     t.text "notification_preferences"
     t.boolean "deleted", default: false
+    t.string "stripe_id"
     t.string "subscription"
     t.string "stripe_customer_id"
     t.string "role"
@@ -136,7 +169,17 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_04_052600) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  create_table "workspaces", force: :cascade do |t|
+    t.string "name"
+    t.boolean "archived"
+    t.datetime "archived_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "orders", "users"
+  add_foreign_key "payments", "orders"
   add_foreign_key "user_analytics", "users"
 end

@@ -23,6 +23,10 @@ Rails.application.routes.draw do
     post '/users/registrations/google_oauth', to: 'users/registrations#google_oauth'
     post '/users/sessions/otp_login', to: 'users/sessions#otp_login'
   end
+  
+  resources :workspaces do
+    resources :team_members
+  end
 
   namespace :settings do
     resources :user_profiles, only: [:show, :update]
