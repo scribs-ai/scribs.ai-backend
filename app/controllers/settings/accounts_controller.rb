@@ -23,6 +23,17 @@ class Settings::AccountsController < ApplicationController
 		else
 			render json: { error: 'User not found' }, status: :not_found
 		end
-  end 
+  end
+
+  def two_factor_setting
+    user = @current_user
+    if user && params[:two_factor] == true
+      user.update(two_factor_enabled: true)
+      render json: {message: 'Two factor enabled'}, status: :ok
+    else 
+      user.update(two_factor_enabled: false)
+      render json: { message: 'Two factor disabled' }, status: :ok
+    end
+  end
 end
   

@@ -44,7 +44,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
   
     if otp.present?
       send_otp_by_mail(user, otp)
-      render json: { otp: otp }, status: :ok
+      render json: { message: 'OTP sent successfully' }, status: :ok
     else
       render_otp_generation_error
     end

@@ -30,6 +30,7 @@ Rails.application.routes.draw do
     resource :accounts, only: [] do
       get :export_user_data
       delete 'delete_account', to: 'accounts#delete_account', as: 'delete_account'
+      post 'two_factor_setting', to: 'accounts#two_factor_setting', as: 'two_factor_setting'
     end
     resources :languages, only: [] do
       collection do
