@@ -15,11 +15,6 @@ class WorkspacesController < ApplicationController
   def create
     @workspace = Workspace.new(workspace_params)
     if @workspace.save
-      bucket_name = Rails.application.credentials.dig(:aws, :bucket)
-      directory_name = @workspace.name
-      s3_client = get_s3_client
-      directory = create_directory(s3_client, bucket_name)
-      upload_file(s3_client, bucket_name)
       image_url =  @workspace.fetch_image_url
       @workspace.update(image_url: image_url)
       render json: {workspace: @workspace}, status: :created
@@ -29,20 +24,16 @@ class WorkspacesController < ApplicationController
   end
 
   def update
-    image_url =  @workspace.fetch_image_url
-    if workspace_params.has_key?(:image)
-      bucket_name = Rails.application.credentials.dig(:aws, :bucket)
-      directory_name = @workspace.name
-      s3_client = get_s3_client
-      directory = create_directory(s3_client, bucket_name)
-      upload_file(s3_client, bucket_name)
-      image_url =  @workspace.fetch_image_url
-    end
-    if @workspace.update(workspace_params)
-      @workspace.update(image_url: image_url)
-      render json: @workspace
+    if @workspace
+      if @workspace.update(workspace_params)
+        image_url =  @workspace.fetch_image_url
+        @workspace.update(image_url: image_url)
+        render json: {workspace: @workspace}, status: :ok
+      else
+        render json: { errors: @workspace.errors.full_messages }, status: :unprocessable_entity
+      end
     else
-      render json: @workspace.errors, status: :unprocessable_entity
+      render json: { error: 'Workspace not found' }, status: :not_found
     end
   end
 
