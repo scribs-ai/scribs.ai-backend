@@ -20,8 +20,9 @@ class WorkspacesController < ApplicationController
       s3_client = get_s3_client
       directory = create_directory(s3_client, bucket_name)
       upload_file(s3_client, bucket_name)
-    
-      render json: @workspace, status: :created
+      image_url =  @workspace.fetch_image_url
+      @workspace.update(image_url: image_url)
+      render json: {workspace: @workspace}, status: :created
     else
       render json: @workspace.errors, status: :unprocessable_entity
     end
@@ -97,4 +98,5 @@ class WorkspacesController < ApplicationController
       body: File.open(file_path, 'rb')
     )
   end
+  
 end
