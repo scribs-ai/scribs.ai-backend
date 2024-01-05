@@ -128,5 +128,6 @@ group :test do
   gem 'faker'
   gem 'shoulda-matchers', require: false
   gem 'simplecov', require: false, group: :test
+  gem 'rails-controller-testing'
 end
 
