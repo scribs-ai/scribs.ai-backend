@@ -15,9 +15,12 @@ class WorkspacesController < ApplicationController
   def create
     @workspace = Workspace.new(workspace_params)
     if @workspace.save
+      bucket_name = Rails.application.credentials.dig(:aws, :bucket)
+      directory_name = @workspace.name
       s3_client = get_s3_client
-      directory = create_directory(s3_client)
-
+      directory = create_directory(s3_client, bucket_name)
+      upload_file(s3_client, bucket_name)
+    
       render json: @workspace, status: :created
     else
       render json: @workspace.errors, status: :unprocessable_entity
@@ -52,7 +55,7 @@ class WorkspacesController < ApplicationController
 	end
 	
   def workspace_params
-    params.require(:workspace).permit(:name, :archived)
+    params.require(:workspace).permit(:name, :archived, :image)
   end
 
   def get_s3_client
@@ -63,23 +66,36 @@ class WorkspacesController < ApplicationController
   )
   end
 
-  def create_directory(s3_client)
+  def create_directory(s3_client, bucket_name)
     directory_name = @workspace.name
-    bucket_name = Rails.application.credentials.dig(:aws, :bucket)
     directory_key = "#{directory_name}/"
 
-    head_object_response = s3_client.head_object(
-      bucket: bucket_name,
-      key: directory_key
-    )
-
-    return Aws::S3::Object.new(bucket_name, directory_key) if head_object_response
+    list_objects_response = s3_client.list_objects_v2( bucket: bucket_name, prefix: directory_key )
+    
+    if list_objects_response.contents.any?
+      # Directory already exists, return the directory object
+      return Aws::S3::Object.new(bucket_name, directory_key)
+    end
 
     s3_client.put_object(
       bucket: bucket_name,
-      key: directory_key
+      key: "#{directory_key}"
     )
 
     Aws::S3::Object.new(bucket_name, directory_key)
+  end
+  
+  def upload_file(s3_client, bucket_name)
+    file_name = File.basename(workspace_params[:image].original_filename)
+    file_path = workspace_params[:image].tempfile.path
+    binding.pry
+
+    file_key = "#{@workspace.name}/#{file_name}"
+
+    s3_client.put_object(
+      bucket: bucket_name,
+      key: file_key,
+      body: File.open(file_path, 'rb')
+    )
   end
 end
