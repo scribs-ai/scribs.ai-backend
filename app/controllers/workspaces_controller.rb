@@ -9,6 +9,8 @@ class WorkspacesController < ApplicationController
   end
 
   def show
+    @workspace = Workspace.find(params[:id])
+    @workspace.image_url = @workspace.fetch_image_url
     render json: @workspace
   end
 
