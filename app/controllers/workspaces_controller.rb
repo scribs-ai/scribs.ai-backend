@@ -29,7 +29,17 @@ class WorkspacesController < ApplicationController
   end
 
   def update
+    image_url =  @workspace.fetch_image_url
+    if workspace_params.has_key?(:image)
+      bucket_name = Rails.application.credentials.dig(:aws, :bucket)
+      directory_name = @workspace.name
+      s3_client = get_s3_client
+      directory = create_directory(s3_client, bucket_name)
+      upload_file(s3_client, bucket_name)
+      image_url =  @workspace.fetch_image_url
+    end
     if @workspace.update(workspace_params)
+      @workspace.update(image_url: image_url)
       render json: @workspace
     else
       render json: @workspace.errors, status: :unprocessable_entity
