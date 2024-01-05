@@ -21,7 +21,7 @@ class User < ApplicationRecord
 
 
   def self.ransackable_attributes(auth_object = nil)
-    ["confirmation_sent_at", "confirmation_token", "confirmed_at", "created_at", "deleted", "email", "encrypted_password", "id", "id_value", "name", "notification_preferences", "otp_secret_key", "profile_picture", "remember_created_at", "reset_password_sent_at", "reset_password_token", "unconfirmed_email", "updated_at"]
+    ["confirmation_sent_at", "confirmation_token", "confirmed_at", "created_at", "deleted", "email", "encrypted_password", "id", "id_value", "first_name", "last_name", "notification_preferences", "otp_secret_key", "profile_picture", "remember_created_at", "reset_password_sent_at", "reset_password_token", "unconfirmed_email", "updated_at"]
   end
 
 
@@ -45,7 +45,7 @@ class User < ApplicationRecord
   end
 
   def self.fetch_users_without_scope
-    connection.select_all("SELECT name, email, notification_preferences,profile_picture, deleted FROM users").to_a
+    connection.select_all("SELECT first_name, last_name, email, notification_preferences,profile_picture, deleted FROM users").to_a
   end
 
   def self.to_csv

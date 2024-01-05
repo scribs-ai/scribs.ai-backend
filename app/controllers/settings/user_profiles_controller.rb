@@ -22,14 +22,16 @@ class Settings::UserProfilesController < ApplicationController
   end
 
   private
+
   def user_params
-    params.require(:user).permit(:name, :image)
+    params.require(:user).permit(:first_name, :last_name, :image)
   end
 
   def user_profile_json
     {
       id: @current_user.id,
-      name: @current_user.name,
+      first_name: @current_user.first_name,
+      last_name:  @current_user.last_name,
       email: @current_user.email,
       profile_picture: @current_user.fetch_image_url,
       created_at: @current_user.created_at,
