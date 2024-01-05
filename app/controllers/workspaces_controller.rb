@@ -88,7 +88,6 @@ class WorkspacesController < ApplicationController
   def upload_file(s3_client, bucket_name)
     file_name = File.basename(workspace_params[:image].original_filename)
     file_path = workspace_params[:image].tempfile.path
-    binding.pry
 
     file_key = "#{@workspace.name}/#{file_name}"
 
