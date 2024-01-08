@@ -26,6 +26,8 @@ Rails.application.routes.draw do
   
   resources :workspaces do
     resources :team_members
+    post 'upload_workspace_data_s3'
+    get 'fetch_workspace_data' 
   end
 
   namespace :settings do

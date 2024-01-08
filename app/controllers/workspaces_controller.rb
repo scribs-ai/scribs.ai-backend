@@ -48,6 +48,31 @@ class WorkspacesController < ApplicationController
 		end
 	end
 
+  def upload_workspace_data_s3
+    @workspace = Workspace.find_by(id: params[:workspace_id])
+    directory_name = @workspace.name
+    
+    bucket_name = Rails.application.credentials.dig(:aws, :bucket)
+    s3_client = get_s3_client
+    directory = create_directory(s3_client, bucket_name)
+    upload_file(s3_client, bucket_name)
+    render json: {message: 'File uploaded successfully'}, status: :ok
+  end
+
+  def fetch_workspace_data
+    @workspace = Workspace.find_by(id: params[:workspace_id])
+    directory_path = @workspace.name
+    bucket_name = Rails.application.credentials.dig(:aws, :bucket)
+    
+    s3 = Aws::S3::Resource.new
+    bucket = s3.bucket(bucket_name)
+
+    objects = bucket.objects(prefix: directory_path)
+
+    object_urls = objects.map { |obj| obj.presigned_url(:get) }
+    render json: { object_urls: object_urls }, status: :ok
+  end
+
   private
 
   def set_workspace
