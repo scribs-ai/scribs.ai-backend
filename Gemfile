@@ -131,3 +131,5 @@ group :test do
   gem 'rails-controller-testing'
 end
 
+gem 'actioncable'
+

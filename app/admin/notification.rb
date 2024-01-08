@@ -8,7 +8,9 @@ ActiveAdmin.register Notification do
     column :title
     column :content
     column 'Actions' do |notification|
-      links = link_to('Send Email to All', send_email_all_admin_notification_path(notification), method: :post)
+      links = link_to('Send to Site', send_site_admin_notification_path(notification), method: :post)
+      links += ' | ' # Add a space between links
+      links += link_to('Send Email to All', send_email_all_admin_notification_path(notification), method: :post)
       links += ' | ' # Add a space between links
       links += link_to('View', resource_path(notification), class: 'member_link view_link')
       links += ' | ' # Add a space between links
@@ -29,14 +31,19 @@ ActiveAdmin.register Notification do
   end
 
   member_action :send_email_all, method: :post do
-    notification = Notification.find(params[:id])
-    send_email_to_group(notification, User.all)
+    @notification = Notification.find(params[:id])
+    send_email_to_group(@notification, User.all)
     redirect_to admin_notifications_path, notice: 'Emails sent successfully to all users.'
   end
 
   member_action :send_email_selected, method: :get do
     notification = Notification.find(params[:id])
     @users = User.all
+  end
+
+  member_action :send_site, method: :post do
+    notification = Notification.find(params[:id])
+    ActionCable.server.broadcast("notification_channel", notification)
   end
 
   form do |f|
@@ -50,8 +57,11 @@ ActiveAdmin.register Notification do
 
   controller do
     def send_email_to_group(notification, users)
-      users.each do |user|
-        UserMailer.renew_subscription(user, notification).deliver_now
+      first_user = users.first
+
+      if first_user
+        notification_data = { title: "New Notification", content: "This is the notification content" }
+        ActionCable.server.broadcast("notification_channel", notification)
       end
     end
   end
