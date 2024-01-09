@@ -1,15 +1,13 @@
-<!-- app/views/notifications/renew_subscription.html.erb -->
 <!DOCTYPE html>
 <html>
 <head>
   <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
 </head>
 <body>
-  <h1>Subscription Renewal Notification</h1>
   
-  <p>Hello <%= @user.name %>,</p>
+  <p>Hello <%= @user.first_name %>,</p>
   
-  <p>We would like to inform you that your subscription is up for renewal.</p>
+  <p>We would like to inform you that for</p>
   
   <p>Notification Details:</p>
   <ul>
@@ -18,7 +16,7 @@
     <li><strong>Sent At:</strong> <%= @notification.sent_at %></li>
   </ul>
   
-  <p>Please visit our website to renew your subscription.</p>
+  <p>Please visit our website.</p>
   
   <p>Thank you for being our valued customer!</p>
 </body>

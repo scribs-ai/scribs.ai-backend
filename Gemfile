@@ -98,6 +98,12 @@ gem "tzinfo-data", platforms: %i[ mswin mswin64 mingw x64_mingw jruby ]
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
 
+# Action Cable seamlessly integrates WebSockets with the rest of your Rails application
+gem 'actioncable'
+
+# in-memory data structure store, used as a database, cache, and message broker
+gem 'redis'
+
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
 
@@ -131,5 +137,6 @@ group :test do
   gem 'rails-controller-testing'
 end
 
-gem 'actioncable'
+
+
 

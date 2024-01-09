@@ -13,10 +13,10 @@ class UserMailer < ApplicationMailer
     mail(to: @user.email, subject: 'Invoice of subscription plan')
   end
   
-  def renew_subscription(user,notification)
+  def email_notification(user,notification)
     @user = user
     @notification = notification
-    mail(to: @user.email, subject: 'Subscription Renewal')
+    mail(to: @user.email, subject: 'Updated Notification')
   end
 end
 

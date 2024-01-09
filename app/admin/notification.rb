@@ -57,11 +57,8 @@ ActiveAdmin.register Notification do
 
   controller do
     def send_email_to_group(notification, users)
-      first_user = users.first
-
-      if first_user
-        notification_data = { title: "New Notification", content: "This is the notification content" }
-        ActionCable.server.broadcast("notification_channel", notification)
+      users.each do |user|
+        UserMailer.email_notification(user, notification).deliver_now
       end
     end
   end
