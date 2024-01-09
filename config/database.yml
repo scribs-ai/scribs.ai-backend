@@ -17,5 +17,5 @@ test:
 production:
   <<: *default
   database: scribs_ai_production
-  username: scribs_ai
-  password: <%= ENV["SCRIBS_DATABASE_PASSWORD"] || "postgres"%>
+  username: postgres
+  password: postgres
